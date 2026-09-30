@@ -1,0 +1,55 @@
+# CraScraper — demo tenant (image-only).
+# Domains: crascraper.fybud.com / api.crascraper.fybud.com
+# Shared Postgres: user=password=crascraper-demo
+# Nginx: infra/demo/nginx/crascraper.fybud.com.conf (installed on first deploy).
+# RabbitMQ + crawler optional — uncomment the block below to enable collection.
+
+name: crascraper-demo
+
+services:
+  backend:
+    image: fiberai/crascraper-api:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    env_file: [.env]
+    environment:
+      PORT: 4000
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET required}
+      CORS_ORIGIN: ${CORS_ORIGIN:-}
+      RABBITMQ_URL: ${RABBITMQ_URL:-}
+    ports:
+      - "127.0.0.1:${API_HOST_PORT:-4400}:4000"
+    networks: [fiberai-net]
+
+  frontend:
+    image: fiberai/crascraper-web:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${WEB_HOST_PORT:-9400}:80"
+    depends_on: [backend]
+    networks: [fiberai-net]
+
+# rabbitmq:
+#   image: rabbitmq:3.13-management-alpine
+#   restart: unless-stopped
+#   volumes:
+#     - rabbitmq_data:/var/lib/rabbitmq
+#   networks: [fiberai-net]
+#
+# crawler:
+#   image: fiberai/crascraper-crawler:${IMAGE_TAG:-latest}
+#   restart: unless-stopped
+#   env_file: [.env]
+#   environment:
+#     DATABASE_URL: ${DATABASE_URL}
+#     RABBITMQ_URL: amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASSWORD:-guest}@rabbitmq:5672/
+#     COLLECTOR_MODE: public
+#   depends_on: [backend, rabbitmq]
+#   networks: [fiberai-net]
+#
+# volumes:
+#   rabbitmq_data:
+
+networks:
+  fiberai-net:
+    external: true
