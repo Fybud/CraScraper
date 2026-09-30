@@ -34,7 +34,7 @@ export const env = {
     .filter(Boolean),
   staleAfterHours: Number(process.env.STALE_AFTER_HOURS || 168),
   maxRefreshJobsPerSearch: Number(process.env.MAX_REFRESH_JOBS_PER_SEARCH || 20),
-  seedEmail: process.env.SEED_EMAIL || "agency@fiberai.com",
+  seedEmail: process.env.SEED_EMAIL || "agency@fybud.com",
   seedPassword: process.env.SEED_PASSWORD || "password123",
   seedName: process.env.SEED_NAME || "Fiber Agency",
 };

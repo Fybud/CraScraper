@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/Input";
 import { login } from "@/features/auth/auth.api";
 import { getToken } from "@/features/auth/auth.utils";
 
-const DEMO_EMAIL = "agency@fiberai.com";
+const DEMO_EMAIL = "agency@fybud.com";
 const DEMO_PASSWORD = "password123";
 
 export default function LoginPage() {
@@ -159,7 +159,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-gray-400 dark:text-neutral-600 mt-8">
-          © {new Date().getFullYear()} FiberAI. All rights reserved.
+          © {new Date().getFullYear()} fybud. All rights reserved.
         </p>
       </div>
     </div>

@@ -4,7 +4,7 @@ Influencer discovery and campaign workspace for agencies. Search a local catalog
 
 ## Demo login
 
-- Email: `agency@fiberai.com`
+- Email: `agency@fybud.com`
 - Password: `password123`
 
 ## Local
@@ -39,10 +39,10 @@ Domains:
 
 Compose publishes apps on loopback so **host nginx** (already installed) is the public entry:
 
-| Host port | Container |
-| --- | --- |
-| `127.0.0.1:8080` | frontend |
-| `127.0.0.1:4001` | backend |
+| Host port        | Container |
+| ---------------- | --------- |
+| `127.0.0.1:8080` | frontend  |
+| `127.0.0.1:4001` | backend   |
 
 1. Copy `.env.example` to `.env`. Set `JWT_SECRET` to a random value (`openssl rand -hex 32`). Compose will refuse to start without it.
 2. Optional: `VITE_API_BASE_URL=https://api.insta-demo.fybud.com` if the SPA should call the API host directly. Leave it empty to use same-origin `/api` on the frontend domain (host nginx proxies that path). Rebuild the frontend after changing this value.

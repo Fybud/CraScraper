@@ -4,7 +4,7 @@ name: crascraper-demo
 
 services:
   backend:
-    image: fiberai/crascraper-api:${IMAGE_TAG:-latest}
+    image: fybud/crascraper-api:${IMAGE_TAG:-latest}
     restart: unless-stopped
     env_file: [.env]
     environment:
@@ -18,7 +18,7 @@ services:
     networks: [fybud-net]
 
   frontend:
-    image: fiberai/crascraper-web:${IMAGE_TAG:-latest}
+    image: fybud/crascraper-web:${IMAGE_TAG:-latest}
     restart: unless-stopped
     ports:
       - "127.0.0.1:${WEB_HOST_PORT:-9400}:80"
