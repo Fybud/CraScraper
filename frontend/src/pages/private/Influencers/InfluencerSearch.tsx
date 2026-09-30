@@ -109,7 +109,7 @@ export default function InfluencerSearch() {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 pb-28">
+    <div className={`p-4 md:p-8 max-w-7xl mx-auto space-y-6 ${selected.size > 0 ? "pb-28" : ""}`}>
       <PageHeader
         title="Discover Influencers"
         description="Search qualified creators. Background collection does not update this page live — search again to see new rows."
@@ -244,26 +244,26 @@ export default function InfluencerSearch() {
         )}
       </div>
 
-      <div className="fixed bottom-0 inset-x-0 md:left-56 bg-white/95 dark:bg-neutral-950/95 border-t border-gray-200 dark:border-neutral-800 px-6 py-4 flex items-center justify-between z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-        <div className="text-sm font-semibold text-gray-900 dark:text-neutral-100">{selected.size} selected</div>
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            disabled={selected.size === 0}
-            onClick={() => setSelected(new Set())}
-            className="text-gray-600 dark:text-neutral-400"
-          >
-            Clear
-          </Button>
-          <Button
-            disabled={selected.size === 0}
-            onClick={() => setModalOpen(true)}
-            className="bg-gray-900 dark:bg-neutral-100 hover:bg-gray-800 dark:hover:bg-white text-white dark:text-neutral-900 shadow-sm"
-          >
-            Add to Campaign
-          </Button>
+      {selected.size > 0 && (
+        <div className="fixed bottom-0 inset-x-0 md:left-56 bg-white/95 dark:bg-neutral-950/95 border-t border-gray-200 dark:border-neutral-800 px-6 py-4 flex items-center justify-between z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+          <div className="text-sm font-semibold text-gray-900 dark:text-neutral-100">{selected.size} selected</div>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setSelected(new Set())}
+              className="text-gray-600 dark:text-neutral-400"
+            >
+              Clear
+            </Button>
+            <Button
+              onClick={() => setModalOpen(true)}
+              className="bg-gray-900 dark:bg-neutral-100 hover:bg-gray-800 dark:hover:bg-white text-white dark:text-neutral-900 shadow-sm"
+            >
+              Add to Campaign
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       <InfluencerProfileDrawer 
         influencerId={drawerId}
