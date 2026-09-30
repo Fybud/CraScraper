@@ -1,6 +1,5 @@
-﻿# CraScraper — demo. Shared Postgres: fybud-postgres on fybud-net (root docker-compose.db.yml).
-
-name: crascraper-demo
+# CraScraper — public frontend/api. Crawler/queue stay private if added later.
+name: crascraper
 
 services:
   backend:
@@ -14,14 +13,20 @@ services:
       CORS_ORIGIN: ${CORS_ORIGIN:-}
       RABBITMQ_URL: ${RABBITMQ_URL:-}
     ports:
-      - "127.0.0.1:${API_HOST_PORT:-4400}:4000"
+      - "127.0.0.1:${API_HOST_PORT}:4000"
+    labels:
+      fybud.expose: "true"
+      fybud.domain: api.crascraper.fybud.com
     networks: [fybud-net]
 
   frontend:
     image: fybud/crascraper-web:${IMAGE_TAG:-latest}
     restart: unless-stopped
     ports:
-      - "127.0.0.1:${WEB_HOST_PORT:-9400}:80"
+      - "127.0.0.1:${WEB_HOST_PORT}:80"
+    labels:
+      fybud.expose: "true"
+      fybud.domain: crascraper.fybud.com
     depends_on: [backend]
     networks: [fybud-net]
 
