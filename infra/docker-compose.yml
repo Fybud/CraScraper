@@ -8,8 +8,12 @@ services:
     env_file: [.env]
     environment:
       PORT: 4000
+      # Paste in the Deploy UI (Settings → Tool specs → requiredEnv): empty value = "needs pasting".
+      JWT_SECRET:
+      # Optional — paste only if used: SEED_EMAIL, SEED_PASSWORD, TARGET_QUALIFIED, STALE_AFTER_HOURS,
+      # RABBITMQ_URL (collection stays disabled without it).
+      # Deploy-injected — never pasted.
       DATABASE_URL: ${DATABASE_URL:?DATABASE_URL required}
-      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET required}
       CORS_ORIGIN: ${CORS_ORIGIN:-}
       RABBITMQ_URL: ${RABBITMQ_URL:-}
     ports:
