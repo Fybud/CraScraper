@@ -17,7 +17,14 @@ services:
     labels:
       fybud.expose: "true"
       fybud.domain: api.crascraper.fybud.com
-    networks: [fybud-net]
+      fybud.health: "/api/health"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:4000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks: [fybud-net, internal]
 
   frontend:
     image: fybud/crascraper-web:${IMAGE_TAG:-latest}
@@ -27,10 +34,13 @@ services:
     labels:
       fybud.expose: "true"
       fybud.domain: crascraper.fybud.com
+      fybud.health: "/"
     depends_on: [backend]
-    networks: [fybud-net]
+    networks: [internal]
 
 networks:
   fybud-net:
     name: fybud-net
     external: true
+  internal:
+    driver: bridge
