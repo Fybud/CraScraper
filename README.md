@@ -30,53 +30,29 @@ UPDATE crawler_control SET paused = false, reason = NULL, paused_at = NULL, upda
 
 Crawlers notice within about a minute. 404s and login walls still skip that one profile only.
 
-## Production
+## Production (Fybud Deploy)
 
-Domains:
+| Service | Domain |
+| --- | --- |
+| Frontend | https://crascraper.fybud.com |
+| API | https://api.crascraper.fybud.com |
 
-- Frontend: `https://insta-demo.fybud.com`
-- API: `https://api.insta-demo.fybud.com`
+Deploy: root [`docker-compose.deploy.yml`](./docker-compose.deploy.yml) + [`DEPLOY.md`](./DEPLOY.md).
+Rules: [`AGENTS.md`](./AGENTS.md).
 
-Compose publishes apps on loopback so **host nginx** (already installed) is the public entry:
+Push to `main` → Actions builds `fybud/crascraper-*` → Fybud Deploy pulls, allocates
+`127.0.0.1:${*_HOST_PORT}`, writes host nginx + Cloudflare DNS. Paste `JWT_SECRET` once in the
+Deploy UI (not host ports / `DATABASE_URL`), then approve.
 
-| Host port        | Container |
-| ---------------- | --------- |
-| `127.0.0.1:8080` | frontend  |
-| `127.0.0.1:4001` | backend   |
+Keep `VITE_API_BASE_URL` empty in the image so the SPA calls same-origin `/api` (Deploy nginx
+proxies that path to the API).
 
-1. Copy `.env.example` to `.env`. Set `JWT_SECRET` to a random value (`openssl rand -hex 32`). Compose will refuse to start without it.
-2. Optional: `VITE_API_BASE_URL=https://api.insta-demo.fybud.com` if the SPA should call the API host directly. Leave it empty to use same-origin `/api` on the frontend domain (host nginx proxies that path). Rebuild the frontend after changing this value.
-3. Start the stack (no crawlers, no RabbitMQ):
-
-```bash
-docker compose up --build -d --remove-orphans
-```
-
-To restore a catalog dump:
+Catalog restore (on the VPS after first deploy, if needed):
 
 ```bash
 chmod +x scripts/restore-catalog.sh
 ./scripts/restore-catalog.sh crascraper.sql
 ```
-
-4. Install the host nginx site (Debian/Ubuntu). Recopy this file after pulling nginx changes:
-
-```bash
-sudo cp infrastructure/nginx/prod.conf /etc/nginx/sites-available/crascraper
-sudo ln -sf /etc/nginx/sites-available/crascraper /etc/nginx/sites-enabled/crascraper
-sudo nginx -t && sudo systemctl reload nginx
-```
-
-On RHEL/CentOS/Amazon Linux, copy to `/etc/nginx/conf.d/crascraper.conf` instead, then `nginx -t` and reload.
-
-5. Point DNS A records for `insta-demo.fybud.com` and `api.insta-demo.fybud.com` at the server.
-6. TLS for both hostnames:
-
-```bash
-sudo certbot --nginx -d insta-demo.fybud.com -d api.insta-demo.fybud.com
-```
-
-Host nginx config lives in `infrastructure/nginx/prod.conf`. The frontend vhost proxies `/` to `:8080` and `/api/` to `:4001`. The API vhost proxies everything to `:4001`.
 
 ## Collection pipeline
 
