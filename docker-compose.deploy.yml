@@ -1,24 +1,23 @@
-# CraScraper — public frontend/api. Crawler/queue stay private if added later.
+# CraScraper — public frontend/api.
+# Only Deploy-injected: IMAGE_TAG + *_HOST_PORT. Everything else = paste (.env.deploy).
 name: crascraper
 
 services:
   backend:
-    image: fybud/crascraper-api:${IMAGE_TAG:-latest}
+    image: fybud/crascraper-api:${IMAGE_TAG:?IMAGE_TAG required}
     restart: unless-stopped
     env_file: [.env]
     environment:
-      PORT: 4000
-      NODE_ENV: production
-      # Empty = paste in Deploy UI. Literal = fixed here. ${VAR:?…} = Deploy-injected.
+      PORT:
+      NODE_ENV:
       JWT_SECRET:
       SEED_EMAIL:
       SEED_PASSWORD:
       TARGET_QUALIFIED:
       STALE_AFTER_HOURS:
       RABBITMQ_URL:
-      # Deploy-injected — never pasted.
-      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL required}
-      CORS_ORIGIN: ${CORS_ORIGIN:?CORS_ORIGIN required}
+      DATABASE_URL:
+      CORS_ORIGIN:
     ports:
       - "127.0.0.1:${API_HOST_PORT}:4000"
     labels:
@@ -27,7 +26,6 @@ services:
       fybud.role: api
       fybud.health: "/api/health"
     healthcheck:
-      # node:alpine — use Node fetch (image has no curl package).
       test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.status<400?0:1)).catch(()=>process.exit(1))\""]
       interval: 15s
       timeout: 5s
@@ -36,7 +34,7 @@ services:
     networks: [fybud-net, internal]
 
   frontend:
-    image: fybud/crascraper-web:${IMAGE_TAG:-latest}
+    image: fybud/crascraper-web:${IMAGE_TAG:?IMAGE_TAG required}
     restart: unless-stopped
     ports:
       - "127.0.0.1:${WEB_HOST_PORT}:80"
@@ -44,7 +42,7 @@ services:
       fybud.expose: "true"
       fybud.domain: crascraper.fybud.com
       fybud.role: web
-      fybud.health: "/"
+      fybud.health: "any"
     depends_on: [backend]
     networks: [internal]
 
