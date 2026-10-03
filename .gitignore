@@ -8,7 +8,7 @@ build/
 Thumbs.db
 .ex
 backups/
-
+.env.deploy
 # Python
 __pycache__/
 *.py[cod]
